@@ -3,7 +3,7 @@
 
 struct fStr;
 
-struct fStr*    fstr_create(char* cstr);
+struct fStr*    fstr_create(char* cstr, unsigned int len);
 void            fstr_release(struct fStr* fstr);
 struct fStr*    fstr_copy(struct fStr* fstr);
 unsigned int    fstr_len(struct fStr* fstr);
