@@ -39,3 +39,17 @@ void fstr_release(struct fStr* fstr) {
     free(fstr);
 }
 
+struct fStr* fstr_copy(struct fStr* fstr) {
+    struct fStr* new_fstr = (struct fStr*)malloc(sizeof(struct fStr));
+    new_fstr->len   = fstr->len;
+    new_fstr->size  = fstr->size;
+    new_fstr->data  = (char*)malloc(sizeof(char)*new_fstr->size);
+    memcpy(new_fstr->data, fstr->data, fstr->len);
+    new_fstr->data[new_fstr->len] = 0;
+    return new_fstr;
+}
+
+unsigned int fstr_len(struct fStr* fstr) {
+    return fstr->len;
+}
+
