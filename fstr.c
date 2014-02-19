@@ -49,7 +49,32 @@ struct fStr* fstr_copy(struct fStr* fstr) {
     return new_fstr;
 }
 
+struct fStr* fstr_resize(struct fStr* fstr, unsigned int new_size) {
+    if ( fstr->size > new_size ) {
+        fstr->len = new_size;
+        fstr->data[fstr->len] = 0;
+    }else {
+        fstr->size = get_alloced_size(new_size);
+        char* new_data = (char*)malloc(sizeof(char)*fstr->size);
+        memcpy(new_data, fstr->data, fstr->len);
+        free(fstr->data);
+        fstr->data = new_data;
+        fstr->data[fstr->len] = 0;
+    }
+    return fstr;
+}
+
 unsigned int fstr_len(struct fStr* fstr) {
     return fstr->len;
+}
+
+struct fStr* fstr_append(struct fStr* fstr, char* cstr, unsigned int len) {
+    if ( fstr->len+len+1 > fstr->size ) {
+        fstr_resize(fstr, fstr->len+len+1);
+    }
+    memcpy(&fstr->data[fstr->len], cstr, len);
+    fstr->len += len;
+    fstr->data[fstr->len] = 0;
+    return fstr;
 }
 
