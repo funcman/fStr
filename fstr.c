@@ -78,3 +78,7 @@ struct fStr* fstr_append(struct fStr* fstr, char* cstr, unsigned int len) {
     return fstr;
 }
 
+char* fstr_to_cstr(struct fStr* fstr) {
+    return fstr->data;
+}
+
