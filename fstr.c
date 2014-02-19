@@ -34,3 +34,8 @@ struct fStr* fstr_create(char* cstr, unsigned int len) {
     return fstr;
 }
 
+void fstr_release(struct fStr* fstr) {
+    free(fstr->data);
+    free(fstr);
+}
+
