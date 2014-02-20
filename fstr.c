@@ -1,6 +1,7 @@
 #include "fstr.h"
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 struct fStr {
     unsigned int    len;
@@ -26,10 +27,19 @@ unsigned int get_alloced_size(unsigned int size) {
 
 struct fStr* fstr_create(char* cstr, unsigned int len) {
     struct fStr* fstr = (struct fStr*)malloc(sizeof(struct fStr));
-    fstr->len   = len;
-    fstr->size  = get_alloced_size(len+1);
-    fstr->data  = (char*)malloc(sizeof(char)*fstr->size);
-    memcpy(fstr->data, cstr, fstr->len);
+    assert(fstr);
+    if ( cstr ) {
+        fstr->len   = len;
+        fstr->size  = get_alloced_size(len+1);
+        fstr->data  = (char*)malloc(sizeof(char)*fstr->size);
+        assert(fstr->data);
+        memcpy(fstr->data, cstr, fstr->len);
+    }else {
+        fstr->len   = 0;
+        fstr->size  = get_alloced_size(len);
+        fstr->data  = (char*)malloc(sizeof(char)*fstr->size);
+        assert(fstr->data);
+    }
     fstr->data[fstr->len] = 0;
     return fstr;
 }
@@ -41,9 +51,11 @@ void fstr_release(struct fStr* fstr) {
 
 struct fStr* fstr_copy(struct fStr* fstr) {
     struct fStr* new_fstr = (struct fStr*)malloc(sizeof(struct fStr));
+    assert(new_fstr);
     new_fstr->len   = fstr->len;
     new_fstr->size  = fstr->size;
     new_fstr->data  = (char*)malloc(sizeof(char)*new_fstr->size);
+    assert(new_fstr->data);
     memcpy(new_fstr->data, fstr->data, fstr->len);
     new_fstr->data[new_fstr->len] = 0;
     return new_fstr;
@@ -55,9 +67,8 @@ struct fStr* fstr_resize(struct fStr* fstr, unsigned int new_size) {
         fstr->data[fstr->len] = 0;
     }else {
         fstr->size = get_alloced_size(new_size);
-        char* new_data = (char*)malloc(sizeof(char)*fstr->size);
-        memcpy(new_data, fstr->data, fstr->len);
-        free(fstr->data);
+        char* new_data = (char*)realloc(fstr->data, sizeof(char)*fstr->size);
+        assert(new_data);
         fstr->data = new_data;
         fstr->data[fstr->len] = 0;
     }
