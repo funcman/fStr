@@ -9,7 +9,7 @@ struct fStr {
     char*           data;
 };
 
-unsigned int next_p2(unsigned int num) {
+static unsigned int next_p2_(unsigned int num) {
     unsigned int n = 2;
     for ( ; n<num ; ) {
         n <<= 1;
@@ -17,11 +17,11 @@ unsigned int next_p2(unsigned int num) {
     return n;
 }
 
-unsigned int get_alloced_size(unsigned int size) {
+static unsigned int get_alloced_size_(unsigned int size) {
     if ( size > 1024*1024 ) {
         return (size/(1024*1024)+1)*(1024*1024);
     }else {
-        return next_p2(size);
+        return next_p2_(size);
     }
 }
 
@@ -30,13 +30,13 @@ struct fStr* fstr_create(char* cstr, unsigned int len) {
     assert(fstr);
     if ( cstr ) {
         fstr->len   = len;
-        fstr->size  = get_alloced_size(len+1);
+        fstr->size  = get_alloced_size_(len+1);
         fstr->data  = (char*)malloc(sizeof(char)*fstr->size);
         assert(fstr->data);
         memcpy(fstr->data, cstr, fstr->len);
     }else {
         fstr->len   = 0;
-        fstr->size  = get_alloced_size(len);
+        fstr->size  = get_alloced_size_(len);
         fstr->data  = (char*)malloc(sizeof(char)*fstr->size);
         assert(fstr->data);
     }
@@ -53,7 +53,7 @@ struct fStr* fstr_copy(struct fStr* fstr) {
     struct fStr* new_fstr = (struct fStr*)malloc(sizeof(struct fStr));
     assert(new_fstr);
     new_fstr->len   = fstr->len;
-    new_fstr->size  = fstr->size;
+    new_fstr->size  = get_alloced_size_(fstr->len+1);
     new_fstr->data  = (char*)malloc(sizeof(char)*new_fstr->size);
     assert(new_fstr->data);
     memcpy(new_fstr->data, fstr->data, fstr->len);
@@ -66,7 +66,7 @@ struct fStr* fstr_resize(struct fStr* fstr, unsigned int new_size) {
         fstr->len = new_size;
         fstr->data[fstr->len] = 0;
     }else {
-        fstr->size = get_alloced_size(new_size);
+        fstr->size = get_alloced_size_(new_size);
         char* new_data = (char*)realloc(fstr->data, sizeof(char)*fstr->size);
         assert(new_data);
         fstr->data = new_data;
