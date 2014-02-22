@@ -13,6 +13,7 @@ struct fStr*    fstr_copy(struct fStr* fstr);
 struct fStr*    fstr_resize(struct fStr* fstr, unsigned int new_size);
 unsigned int    fstr_len(struct fStr* fstr);
 struct fStr*    fstr_append(struct fStr* fstr, char* cstr, unsigned int len);
+int             fstr_find(struct fStr* fstr, char* cstr, unsigned int len, unsigned int index);
 char*           fstr_to_cstr(struct fStr* fstr);
 
 #ifdef __cplusplus

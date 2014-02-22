@@ -89,7 +89,21 @@ struct fStr* fstr_append(struct fStr* fstr, char* cstr, unsigned int len) {
     return fstr;
 }
 
+int fstr_find(struct fStr* fstr, char* cstr, unsigned int len, unsigned int index) {
+    int i = index;
+    int j = 0;
+    while ( i < fstr->len-len+1 ) {
+        while ( fstr->data[i] == cstr[j] ) {
+            ++i;
+            ++j;
+            if ( j == len ) return i-len;
+        }
+        j = 0;
+        ++i;
+    }
+    return -1;
+}
+
 char* fstr_to_cstr(struct fStr* fstr) {
     return fstr->data;
 }
-
