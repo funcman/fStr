@@ -104,6 +104,34 @@ int fstr_find(struct fStr* fstr, char* cstr, unsigned int len, unsigned int inde
     return -1;
 }
 
+struct fStr* fstr_replace(struct fStr* fstr, unsigned int pos, unsigned int len, char* rstr, unsigned int rlen) {
+    if ( pos < fstr->len ) {
+        if ( pos+len > fstr->len ) {
+            len = fstr->len - pos;
+        }
+        if ( fstr->len+rlen-len+1 > fstr->size ) {
+            fstr = fstr_resize(fstr, fstr->len+rlen-len+1);
+        }
+        if ( len > rlen ) {
+            memcpy(&fstr->data[pos], rstr, rlen);
+            memcpy(&fstr->data[pos+rlen], &fstr->data[pos+len], fstr->len-pos-len);
+            fstr->len -= (len-rlen);
+            fstr->data[fstr->len] = 0;
+        }else if ( len == rlen ) {
+            memcpy(&fstr->data[pos], rstr, rlen);
+        }else {
+            char* temp = (char*)malloc(sizeof(char)*fstr->len-pos-len);
+            memcpy(temp, &fstr->data[pos+len], fstr->len-pos-len);
+            memcpy(&fstr->data[pos], rstr, rlen);
+            memcpy(&fstr->data[pos+rlen], temp, fstr->len-pos-len);
+            fstr->len += (rlen-len);
+            fstr->data[fstr->len] = 0;
+            free(temp);
+        }
+    }
+    return fstr;
+}
+
 char* fstr_to_cstr(struct fStr* fstr) {
     return fstr->data;
 }
